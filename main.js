@@ -23,16 +23,22 @@ function sendImage(res, image, source) {
   res.end(image);
 }
 
+async function readBody(req) {
+  const chunks = [];
+  for await (const chunk of req) {
+    chunks.push(chunk);
+  }
+  return Buffer.concat(chunks);
+}
+
 async function handleGet(res, file, code) {
-  // 1. Пробуємо кеш
   try {
     const cached = await fs.readFile(file);
     return sendImage(res, cached, 'cache');
   } catch (err) {
-    if (err.code !== 'ENOENT') throw err; // інша помилка диска -> 500
+    if (err.code !== 'ENOENT') throw err;
   }
 
-  // 2. У кеші немає — йдемо на http.cat
   let image;
   try {
     const response = await superagent
@@ -44,9 +50,17 @@ async function handleGet(res, file, code) {
     return sendText(res, 404, 'Not Found');
   }
 
-  // 3. Спочатку зберігаємо в кеш, потім віддаємо клієнту
   await fs.writeFile(file, image);
   sendImage(res, image, 'http.cat');
+}
+
+async function handlePut(req, res, file) {
+  const body = await readBody(req);
+  if (body.length === 0) {
+    return sendText(res, 400, 'Bad Request: empty body');
+  }
+  await fs.writeFile(file, body);
+  sendText(res, 201, 'Created');
 }
 
 async function main() {
@@ -64,6 +78,8 @@ async function main() {
       switch (req.method) {
         case 'GET':
           return await handleGet(res, file, code);
+        case 'PUT':
+          return await handlePut(req, res, file);
         default:
           return sendText(res, 405, 'Method Not Allowed', { Allow: 'GET, PUT, DELETE' });
       }

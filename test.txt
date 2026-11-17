@@ -12,3 +12,12 @@ curl -s -D - localhost:3000/abc
 
 # Недозволений метод (405 + Allow)
 curl -s -D - -X POST localhost:3000/200
+
+# PUT: записати картинку в кеш (201)
+curl -s -D - -X PUT --data-binary @/tmp/200.jpg localhost:3000/418
+
+# GET після PUT: віддається наша картинка (X-Image-Source: cache)
+curl -s -D - -o /tmp/418.jpg localhost:3000/418
+
+# PUT з порожнім тілом (400)
+curl -s -D - -X PUT localhost:3000/418
