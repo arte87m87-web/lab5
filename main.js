@@ -63,6 +63,16 @@ async function handlePut(req, res, file) {
   sendText(res, 201, 'Created');
 }
 
+async function handleDelete(res, file) {
+  try {
+    await fs.unlink(file);
+  } catch (err) {
+    if (err.code === 'ENOENT') return sendText(res, 404, 'Not Found');
+    throw err;
+  }
+  sendText(res, 200, 'OK');
+}
+
 async function main() {
   await fs.mkdir(cache, { recursive: true });
 
@@ -80,6 +90,8 @@ async function main() {
           return await handleGet(res, file, code);
         case 'PUT':
           return await handlePut(req, res, file);
+        case 'DELETE':
+          return await handleDelete(res, file);
         default:
           return sendText(res, 405, 'Method Not Allowed', { Allow: 'GET, PUT, DELETE' });
       }
@@ -98,3 +110,4 @@ main().catch((err) => {
   console.error('Помилка запуску:', err.message);
   process.exit(1);
 });
+

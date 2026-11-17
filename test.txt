@@ -21,3 +21,9 @@ curl -s -D - -o /tmp/418.jpg localhost:3000/418
 
 # PUT з порожнім тілом (400)
 curl -s -D - -X PUT localhost:3000/418
+
+# DELETE: видалити картинку з кешу (200)
+curl -s -D - -X DELETE localhost:3000/418
+
+# DELETE: картинки вже немає (404)
+curl -s -D - -X DELETE localhost:3000/418
