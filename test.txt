@@ -1,0 +1,14 @@
+# GET: картинки немає в кеші (X-Image-Source: http.cat)
+curl -s -D - -o /tmp/200.jpg localhost:3000/200
+
+# GET: повторний запит (X-Image-Source: cache)
+curl -s -D - -o /tmp/200.jpg localhost:3000/200
+
+# GET: неіснуючий код (404)
+curl -s -D - localhost:3000/999
+
+# GET: некоректний шлях (404)
+curl -s -D - localhost:3000/abc
+
+# Недозволений метод (405 + Allow)
+curl -s -D - -X POST localhost:3000/200
