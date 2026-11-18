@@ -77,6 +77,7 @@ async function main() {
   await fs.mkdir(cache, { recursive: true });
 
   const server = http.createServer(async (req, res) => {
+    console.log(`${new Date().toISOString()} ${req.method} ${req.url}`);
     try {
       const { pathname } = new URL(req.url, 'http://localhost');
       const match = /^\/(\d{3})$/.exec(pathname);
