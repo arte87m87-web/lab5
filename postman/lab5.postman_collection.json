@@ -1,0 +1,250 @@
+{
+  "info": {
+    "_postman_id": "6755bde8-87ba-402f-85ce-a949d712fe26",
+    "name": "lab5",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "60258352",
+    "_collection_link": "https://go.postman.co/collection/60258352-6755bde8-87ba-402f-85ce-a949d712fe26?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "1. GET 200 (не в кеші)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 200\", () => pm.response.to.have.status(200));\npm.test(\"Content-Type image/jpeg\", () => pm.response.to.have.header(\"Content-Type\", \"image/jpeg\"));\npm.test(\"Джерело http.cat\", () => pm.expect(pm.response.headers.get(\"X-Image-Source\")).to.eql(\"http.cat\"));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/200",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "200"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2. GET 200 (повторно, з кешу)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 200\", () => pm.response.to.have.status(200));\npm.test(\"Content-Type image/jpeg\", () => pm.response.to.have.header(\"Content-Type\", \"image/jpeg\"));\npm.test(\"Джерело cache\", () => pm.expect(pm.response.headers.get(\"X-Image-Source\")).to.eql(\"cache\"));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/200",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "200"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "3. PUT 418 (власна картинка)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 201\", () => pm.response.to.have.status(201));\npm.test(\"Тіло Created\", () => pm.expect(pm.response.text()).to.eql(\"Created\"));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "file",
+          "file": {
+            "src": "my_cat.jpg"
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/418",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "418"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4. GET 418 (після PUT)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 200\", () => pm.response.to.have.status(200));\npm.test(\"Джерело cache\", () => pm.expect(pm.response.headers.get(\"X-Image-Source\")).to.eql(\"cache\"));\npm.test(\"Повернулась наша картинка\", () => pm.expect(pm.response.size().body).to.eql(31128));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/418",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "418"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "5. DELETE 418 (видалення)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 200\", () => pm.response.to.have.status(200));\npm.test(\"Тіло OK\", () => pm.expect(pm.response.text()).to.eql(\"OK\"));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/418",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "418"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "6. DELETE 418 (вже немає)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 404\", () => pm.response.to.have.status(404));\npm.test(\"Тіло Not Found\", () => pm.expect(pm.response.text()).to.eql(\"Not Found\"));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/418",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "418"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "7. GET 999 (не існує)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 404\", () => pm.response.to.have.status(404));\npm.test(\"Тіло Not Found\", () => pm.expect(pm.response.text()).to.eql(\"Not Found\"));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/999",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "999"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "8. POST 200 (405)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 405\", () => pm.response.to.have.status(405));\npm.test(\"Заголовок Allow\", () => pm.expect(pm.response.headers.get(\"Allow\")).to.eql(\"GET, PUT, DELETE\"));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/200",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "200"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "value": ""
+    },
+    {
+      "key": "baseUrl",
+      "value": ""
+    }
+  ]
+}
